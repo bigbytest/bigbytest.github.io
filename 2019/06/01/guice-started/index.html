@@ -1,0 +1,193 @@
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+	
+	<title>Guice 基础</title>
+	<meta name="keywords" content="bigbytes">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="stylesheet" href="/css/code.css" type="text/css">
+        <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+        <link rel="stylesheet" href="/css/article.css" type="text/css">
+        <script src="/js/util.js"></script>
+        <script>
+            if(isMobile()) {
+                loadjscssfile('../css/mobile.css', 'css');
+            } else {
+                loadjscssfile('../css/desktop.css', 'css');
+            }
+        </script> 
+    
+
+    <link rel="alternate" type="application/atom+xml" href="/atom.xml" title="Atom feed">
+
+    
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=3">
+    
+</head>
+
+<body>
+
+<nav class="navbar navbar-default navbar-fixed-top" style="opacity: .9" role="navigation">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a style="font-size: 20px; color: #666;" class="navbar-brand" href="/">BigBytes</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+            
+                
+                    <li>
+                        <a target="_blank" href="/about"> Msg</a>
+                    </li>
+                
+            
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div class="row" style="padding-top: 80px">
+    <div class="container center-block">
+        <div class="col-md-1"></div>
+        <div class="col-md-10 col-sm-12">
+            <h1 style="text-align: center"> Guice 基础</h1>
+            <hr>
+            <p>日期: 2019-06-01</p>
+            <p>分类:
+                
+                    
+                    <a href="/tags/Guice/">Guice</a>|<a href="/tags/IOC/">IOC</a>
+            
+            </p>
+            <hr>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#What-is-Guice"><span class="toc-text">What is Guice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC"><span class="toc-text">IoC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Getting-Started"><span class="toc-text">Getting Started</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#maven依赖"><span class="toc-text">maven依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#接口注入"><span class="toc-text">接口注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#接口绑定"><span class="toc-text">接口绑定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#实例获取"><span class="toc-text">实例获取</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bindings"><span class="toc-text">Bindings</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#链式绑定"><span class="toc-text">链式绑定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#注解绑定"><span class="toc-text">注解绑定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Named注解绑定"><span class="toc-text">@Named注解绑定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Provider注解方法绑定"><span class="toc-text">@Provider注解方法绑定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Provider绑定"><span class="toc-text">Provider绑定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Untargeted-Bindings"><span class="toc-text">Untargeted Bindings</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#构造绑定"><span class="toc-text">构造绑定</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Built-in-Bindings"><span class="toc-text">Built-in Bindings</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Just-In-Time-Bindings"><span class="toc-text">Just-In-Time Bindings</span></a></li></ol></li></ol>
+            <h3 id="What-is-Guice"><a href="#What-is-Guice" class="headerlink" title="What is Guice"></a>What is Guice</h3><p>Guice是Google开源的为Java 5及后续版本设计的IoC容器，相对于Spring IoC来说Guice具有轻量、启动快等特点。</p>
+<h3 id="IoC"><a href="#IoC" class="headerlink" title="IoC"></a>IoC</h3><p>IoC(Inversion of Control缩写)即控制反转，是面向对象编程中依赖倒置原则的一种体现。所谓反转指的是获得依赖对象的过程被反转了。控制被反转之后，获得依赖对象的过程由自身管理变为了由IOC容器主动注入。因此控制反转也被称作依赖注入(DI),就是由IOC容器在运行期间，动态地将某种依赖关系注入到对象之中。由于IOC容器生成对象一般是通过反射方式实现，因此在运行效率上会有一定的损耗。</p>
+<h3 id="Getting-Started"><a href="#Getting-Started" class="headerlink" title="Getting Started"></a>Getting Started</h3><h4 id="maven依赖"><a href="#maven依赖" class="headerlink" title="maven依赖"></a>maven依赖</h4><pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.google.inject&lt;/groupId&gt;
+    &lt;artifactId&gt;guice&lt;/artifactId&gt;
+    &lt;version&gt;${guice.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+<h4 id="接口注入"><a href="#接口注入" class="headerlink" title="接口注入"></a>接口注入</h4><pre><code>public class VisitServiceImpl implements IVisitService {
+
+    @Inject
+    private ILogService logService;
+
+    public void vist(String user) {
+        this.logService.log(user + " is visit ...");
+    }
+}</code></pre>
+
+<h4 id="接口绑定"><a href="#接口绑定" class="headerlink" title="接口绑定"></a>接口绑定</h4><p>Guice中接口和实现在类中进行绑定,可通过继承com.google.inject.AbstractModule在configure()方法中进行绑定。</p>
+<pre><code>public class VisitModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+         bind(ILogService.class).to(JdkLogServiceImpl.class);
+         bind(IVisitService.class).to(VisitServiceImpl.class);
+    }
+}</code></pre>
+
+<h4 id="实例获取"><a href="#实例获取" class="headerlink" title="实例获取"></a>实例获取</h4><pre><code>public static void main(String[] args) {
+    // 加载Module,创建注射器
+    Injector injector = Guice.createInjector(new VisitModule());
+    // 获取IVisitService接口实例
+    IVisitService visitor = injector.getInstance(IVisitService.class);
+    visitor.vist("jack");
+}</code></pre>
+
+<h3 id="Bindings"><a href="#Bindings" class="headerlink" title="Bindings"></a>Bindings</h3><h4 id="链式绑定"><a href="#链式绑定" class="headerlink" title="链式绑定"></a>链式绑定</h4><pre><code>public class BillingModule extends AbstractModule {
+
+    @Override 
+    protected void configure() {
+        // TransactionLog可直接绑定到MySqlDatabaseTransactionLog
+        bind(TransactionLog.class).to(DatabaseTransactionLog.class);
+        bind(DatabaseTransactionLog.class).to(MySqlDatabaseTransactionLog.class);
+    }
+}</code></pre>
+
+<h4 id="注解绑定"><a href="#注解绑定" class="headerlink" title="注解绑定"></a>注解绑定</h4><ol>
+<li>定义注解</li>
+</ol>
+<p>注: 一个注解只能用于绑定一个接口实现，否则Guice将会报错。</p>
+<pre><code>/**BindingAnnotation定义绑定注解*/
+@BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
+public @interface PayPal {}</code></pre>
+
+<ol start="2">
+<li>依赖注入</li>
+</ol>
+<pre><code>public class BillingModule extends AbstractModule {
+
+    @Override 
+    protected void configure() {
+        // TransactionLog可直接绑定到MySqlDatabaseTransactionLog
+        bind(TransactionLog.class).to(DatabaseTransactionLog.class);
+        bind(DatabaseTransactionLog.class).to(MySqlDatabaseTransactionLog.class);
+    }
+}</code></pre>
+
+<ol start="3">
+<li>绑定</li>
+</ol>
+<pre><code>public class BillingModule extends AbstractModule {
+
+    @Override 
+    protected void configure() {
+        // TransactionLog可直接绑定到MySqlDatabaseTransactionLog
+        bind(TransactionLog.class).to(DatabaseTransactionLog.class);
+        bind(DatabaseTransactionLog.class).to(MySqlDatabaseTransactionLog.class);
+    }
+}</code></pre>
+
+<h4 id="Named注解绑定"><a href="#Named注解绑定" class="headerlink" title="@Named注解绑定"></a>@Named注解绑定</h4><h4 id="Provider注解方法绑定"><a href="#Provider注解方法绑定" class="headerlink" title="@Provider注解方法绑定"></a>@Provider注解方法绑定</h4><h4 id="Provider绑定"><a href="#Provider绑定" class="headerlink" title="Provider绑定"></a>Provider绑定</h4><h4 id="Untargeted-Bindings"><a href="#Untargeted-Bindings" class="headerlink" title="Untargeted Bindings"></a>Untargeted Bindings</h4><h4 id="构造绑定"><a href="#构造绑定" class="headerlink" title="构造绑定"></a>构造绑定</h4><h4 id="Built-in-Bindings"><a href="#Built-in-Bindings" class="headerlink" title="Built-in Bindings"></a>Built-in Bindings</h4><h4 id="Just-In-Time-Bindings"><a href="#Just-In-Time-Bindings" class="headerlink" title="Just-In-Time Bindings"></a>Just-In-Time Bindings</h4>
+            <hr>
+            <h3>评论</h3>
+            <div id="vcomment"></div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>
+
+
+<script src="/js/code.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/av-min.js"></script>
+<script src="/js/Valine.min.js"></script>
+<script type="text/javascript">
+    window.valine = new Valine({
+        el: '#vcomment' ,
+        verify: true,
+        notify: true,
+        appId: 'l26jPnpFgxc93Coa6odFv8gK-gzGzoHsz',
+        appKey: 'HHirE8jeStd92iMPmRn1Tlkp',
+        placeholder: '欢迎评论'
+    });
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?6f41a421521590fc1cf5e6ae0a19f935";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+</body>
+</html>

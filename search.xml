@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[Guice 基础]]></title>
+    <url>%2F2019%2F06%2F01%2Fguice-started%2F</url>
+    <content type="text"><![CDATA[What is GuiceGuice是Google开源的为Java 5及后续版本设计的IoC容器，相对于Spring IoC来说Guice具有轻量、启动快等特点。 IoCIoC(Inversion of Control缩写)即控制反转，是面向对象编程中依赖倒置原则的一种体现。所谓反转指的是获得依赖对象的过程被反转了。控制被反转之后，获得依赖对象的过程由自身管理变为了由IOC容器主动注入。因此控制反转也被称作依赖注入(DI),就是由IOC容器在运行期间，动态地将某种依赖关系注入到对象之中。由于IOC容器生成对象一般是通过反射方式实现，因此在运行效率上会有一定的损耗。 Getting Startedmaven依赖&lt;dependency&gt; &lt;groupId&gt;com.google.inject&lt;/groupId&gt; &lt;artifactId&gt;guice&lt;/artifactId&gt; &lt;version&gt;${guice.version}&lt;/version&gt; &lt;/dependency&gt; 接口注入public class VisitServiceImpl implements IVisitService { @Inject private ILogService logService; public void vist(String user) { this.logService.log(user + " is visit ..."); } } 接口绑定Guice中接口和实现在类中进行绑定,可通过继承com.google.inject.AbstractModule在configure()方法中进行绑定。 public class VisitModule extends AbstractModule { @Override protected void configure() { bind(ILogService.class).to(JdkLogServiceImpl.class); bind(IVisitService.class).to(VisitServiceImpl.class); } } 实例获取public static void main(String[] args) { // 加载Module,创建注射器 Injector injector = Guice.createInjector(new VisitModule()); // 获取IVisitService接口实例 IVisitService visitor = injector.getInstance(IVisitService.class); visitor.vist("jack"); } Bindings链式绑定public class BillingModule extends AbstractModule { @Override protected void configure() { // TransactionLog可直接绑定到MySqlDatabaseTransactionLog bind(TransactionLog.class).to(DatabaseTransactionLog.class); bind(DatabaseTransactionLog.class).to(MySqlDatabaseTransactionLog.class); } } 注解绑定 定义注解 注: 一个注解只能用于绑定一个接口实现，否则Guice将会报错。 /**BindingAnnotation定义绑定注解*/ @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME) public @interface PayPal {} 依赖注入 public class BillingModule extends AbstractModule { @Override protected void configure() { // TransactionLog可直接绑定到MySqlDatabaseTransactionLog bind(TransactionLog.class).to(DatabaseTransactionLog.class); bind(DatabaseTransactionLog.class).to(MySqlDatabaseTransactionLog.class); } } 绑定 public class BillingModule extends AbstractModule { @Override protected void configure() { // TransactionLog可直接绑定到MySqlDatabaseTransactionLog bind(TransactionLog.class).to(DatabaseTransactionLog.class); bind(DatabaseTransactionLog.class).to(MySqlDatabaseTransactionLog.class); } } @Named注解绑定@Provider注解方法绑定Provider绑定Untargeted Bindings构造绑定Built-in BindingsJust-In-Time Bindings]]></content>
+      <tags>
+        <tag>Guice</tag>
+        <tag>IOC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Hello World]]></title>
+    <url>%2F2019%2F06%2F01%2Fhello-world%2F</url>
+    <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment]]></content>
+      <tags>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+</search>
